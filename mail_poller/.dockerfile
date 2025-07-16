@@ -24,6 +24,6 @@ ENV VIRTUAL_ENV=/opt/.venv \
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY src/* ./
+COPY mail_poller/src/* ./
 
 CMD ["python3", "main.py"]
