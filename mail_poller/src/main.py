@@ -36,7 +36,7 @@ if __name__ == '__main__':
         
         while True:
             email_data = fetch_email(mail)
-            logger.info(f"Email text: {email_data.subject}")
+            logger.info(f"Email subject: {email_data.subject}")
             push_email_to_queue(redis_client, email_data)
 
 
