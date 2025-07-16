@@ -32,4 +32,7 @@ jobs:
         with:
           file: mail_poller/.dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/mail_poller:latest 
+          tags: ${{ env.REGISTRY }}/${{ github.repository_owner }}/mail_poller:latest
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/mail_poller:buildcache
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/mail_poller:buildcache,mode=max
+          
