@@ -29,4 +29,4 @@ jobs:
           context: mail_poller
           file: .dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}/mail_poller:latest 
+          tags: ${{ env.REGISTRY }}/moneytracker/mail_poller:latest 
