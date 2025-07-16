@@ -1,0 +1,25 @@
+[project]
+name = "moneytracker"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Щиголь Алексей",email = "hosglial@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "beautifulsoup4 (>=4.13.4,<5.0.0)",
+    "redis (>=6.2.0,<7.0.0)",
+    "httpx (>=0.28.1,<0.29.0)",
+    "dotenv (>=0.9.9,<0.10.0)",
+    "pydantic (>=2.11.7,<3.0.0)",
+    "python-telegram-bot (>=22.2,<23.0)",
+    "alembic (>=1.16.4,<2.0.0)",
+    "sqlalchemy (>=2.0.41,<3.0.0)",
+    "psycopg (>=3.2.9,<4.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
