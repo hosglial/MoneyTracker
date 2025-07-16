@@ -19,7 +19,7 @@ if not PASSWORD:
 
 def push_email_to_queue(redis_client: redis.Redis, email_data: EmailData):
     redis_client.lpush('mail_queue', email_data.model_dump_json())
-    logger.info(f"Pushed email to queue: {email_data.subject}")
+    logger.info(f"Pushed email to queue: {email_data.subject} {email_data.sender}")
 
 
 if __name__ == '__main__':
