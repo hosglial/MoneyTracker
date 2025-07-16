@@ -27,7 +27,6 @@ jobs:
       - name: Build and push mail_poller image
         uses: docker/build-push-action@v5
         with:
-          context: "{{defaultContext}}:mail_poller"
-          file: .dockerfile
+          file: mail_poller/.dockerfile
           push: true
           tags: ${{ env.REGISTRY }}/moneytracker/mail_poller:latest 
