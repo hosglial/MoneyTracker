@@ -9,19 +9,45 @@ from zoneinfo import ZoneInfo
 
 import httpx
 import redis.asyncio as redis
-from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-config_path = Path(os.getenv('CONFIG_PATH'))
-
-load_dotenv(dotenv_path=config_path / '.env')
 
 REDIS_URL = os.getenv('REDIS_ADDR')
 HTTP_ENDPOINT = 'https://openrouter.ai/api/v1/chat/completions'
 
-system_prompt = (config_path / 'prompt.txt').read_text()
+system_prompt = '''
+Ты — помощник для автоматизации учёта расходов.
+Тебе дан текст кассового чека.
+Твоя задача — извлечь из него следующие данные:
+Категорию чека (Выбирай СТРОГО из следующих категорий: 
+Продукты,
+Еда вне дома,
+Здоровье,
+Транспорт,
+Одежда и обувь,
+Товары для дома,
+Развлечения,
+Подарки,
+Техника,
+Отдых,
+Сигареты,
+Красота,
+Другое
+)
+Общую сумму чека (только число, без валюты и лишних символов).
+Время и дата покупки (в формате ISO 8601,  например: 2024-06-12T15:30:00).
+Отправителя чека (обычно это организация, ООО, ИП и т.п.)
+Ответь строго в формате JSON:
+{
+"category": "<категория>",
+"total": <сумма>,
+"date": "<время и дата покупки>",
+"place": "<отправитель чека>"
+}
+Текст чека:
+'''
 
 
 async def send_to_llm(mail_data: dict, http_client: httpx.AsyncClient):
@@ -82,4 +108,5 @@ async def process_queue():
 
 
 if __name__ == '__main__':
+    logger.info("LLM agent started")
     asyncio.run(process_queue())

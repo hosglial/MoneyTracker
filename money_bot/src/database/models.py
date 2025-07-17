@@ -1,7 +1,8 @@
-from sqlalchemy import ForeignKey, create_engine, Column, Integer, String, DateTime, Float
-from sqlalchemy.orm import declarative_base, sessionmaker, relationship
+from sqlalchemy import ForeignKey, Column, Integer, String, DateTime, Float
+from sqlalchemy.orm import declarative_base, relationship
 
 Base = declarative_base()
+
 
 class Transaction(Base):
     __tablename__ = 'transactions'
@@ -14,11 +15,13 @@ class Transaction(Base):
     category_id = Column(Integer, ForeignKey('money_tracker.categories.category_id'), nullable=True)
     category = relationship('Category', backref='transactions')
 
+
 class Category(Base):
     __tablename__ = 'categories'
     __table_args__ = {'schema': 'money_tracker', 'extend_existing': True}
     category_id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, index=True)
+
 
 class Subcategory(Base):
     __tablename__ = 'subcategories'
