@@ -34,4 +34,5 @@ RUN apk add --no-cache libpq
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
-COPY money_bot/src/* ./
+# Copy the entire src directory to preserve structure
+COPY money_bot/src/ ./
