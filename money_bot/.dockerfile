@@ -7,6 +7,13 @@ ENV POETRY_NO_INTERACTION=1 \
     POETRY_VIRTUALENVS_CREATE=1 \
     POETRY_CACHE_DIR=/tmp/poetry_cache
 
+# Install system dependencies for PostgreSQL
+RUN apk add --no-cache \
+    libpq-dev \
+    gcc \
+    musl-dev \
+    python3-dev
+
 COPY pyproject.toml poetry.lock ./
 
 RUN --mount=type=cache,target=/root/.cache/pip \
@@ -21,6 +28,9 @@ WORKDIR /app
 
 ENV VIRTUAL_ENV=/opt/.venv \
     PATH="/opt/.venv/bin:$PATH"
+
+# Install runtime dependencies
+RUN apk add --no-cache libpq
 
 COPY --from=builder ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
