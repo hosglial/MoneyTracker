@@ -19,6 +19,7 @@ import json
 import locale
 import logging
 import os
+import re
 
 import redis.asyncio as redis
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
@@ -43,6 +44,13 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+
+def escape_markdown_v2(text: str) -> str:
+    """Экранирует специальные символы для MarkdownV2"""
+    special_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for char in special_chars:
+        text = text.replace(char, f'\\{char}')
+    return text
 
 
 async def edit_transaction(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -100,12 +108,18 @@ async def redis_command_listener(application):
 
                 transaction_id = transaction.transaction_id
 
+                # Экранируем текст для MarkdownV2
+                place_escaped = escape_markdown_v2(transaction.place)
+                date_escaped = escape_markdown_v2(transaction.receipt_date.strftime('%d %B %Y, %H:%M'))
+                total_escaped = escape_markdown_v2(f"{transaction.total:.2f} ₽")
+                category_escaped = escape_markdown_v2(transaction.category.name)
+
                 reply_text = (
                     f"*Добавлена транзакция*\n"
-                    f"*Отправитель*: {transaction.place}\n"
-                    f"*Дата*: {transaction.receipt_date.strftime('%d %B %Y, %H:%M')}\n"
-                    f"*Сумма*: {transaction.total:.2f} ₽\n"
-                    f"*Категория*: {transaction.category.name}"
+                    f"*Отправитель*: {place_escaped}\n"
+                    f"*Дата*: {date_escaped}\n"
+                    f"*Сумма*: {total_escaped}\n"
+                    f"*Категория*: {category_escaped}"
                 )
 
             keyboard = [[
