@@ -6,19 +6,13 @@ env:
 on:
   push:
     branches: [ main ]
-    
+
 jobs:
   build_mail_poller:
     permissions:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    if: |
-      contains(github.event.head_commit.modified, '.github/workflows/docker_images_build.yml') ||
-      contains(github.event.head_commit.modified, 'mail_poller/') ||
-      contains(github.event.head_commit.added, 'mail_poller/') ||
-      contains(github.event.head_commit.removed, 'mail_poller/') ||
-      contains(github.event.head_commit.modified, 'poetry.lock')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -47,12 +41,6 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    if: |
-      contains(github.event.head_commit.modified, '.github/workflows/docker_images_build.yml') ||
-      contains(github.event.head_commit.modified, 'llm_agent/') ||
-      contains(github.event.head_commit.added, 'llm_agent/') ||
-      contains(github.event.head_commit.removed, 'llm_agent/') ||
-      contains(github.event.head_commit.modified, 'poetry.lock')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -81,12 +69,6 @@ jobs:
       contents: read
       packages: write
     runs-on: ubuntu-latest
-    if: |
-      contains(github.event.head_commit.modified, '.github/workflows/docker_images_build.yml') ||
-      contains(github.event.head_commit.modified, 'money_bot/') ||
-      contains(github.event.head_commit.added, 'money_bot/') ||
-      contains(github.event.head_commit.removed, 'money_bot/') ||
-      contains(github.event.head_commit.modified, 'poetry.lock')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
