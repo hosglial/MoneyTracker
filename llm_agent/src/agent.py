@@ -92,19 +92,23 @@ async def process_queue():
             except HTTPError as e:
                 logger.error(f"Failed to send HTTP request: {e}")
                 continue
+            
+            try:
+                llm_response = json.loads(response.json()['choices'][0]['message']['content'])
+                logger.info(f"Sent to LLM, status: {response.status_code}, response: {llm_response}")
+                msg_data.update(llm_response)
 
-            llm_response = json.loads(response.json()['choices'][0]['message']['content'])
-            logger.info(f"Sent to LLM, status: {response.status_code}, response: {llm_response}")
-            msg_data.update(llm_response)
+                if msg_data['receipt_date']:
+                    dt = datetime.fromisoformat(msg_data['receipt_date'])
+                    # TODO: get timezone or offsetfrom msg_data['timezone']
+                    tz = ZoneInfo('Europe/Moscow')
+                    dt_with_tz = dt.astimezone(tz)
+                    msg_data['receipt_date'] = dt_with_tz.isoformat()
 
-            if msg_data['receipt_date']:
-                dt = datetime.fromisoformat(msg_data['receipt_date'])
-                # TODO: get timezone or offsetfrom msg_data['timezone']
-                tz = ZoneInfo('Europe/Moscow')
-                dt_with_tz = dt.astimezone(tz)
-                msg_data['receipt_date'] = dt_with_tz.isoformat()
-
-            await redis_client.lpush('transactions', json.dumps(msg_data, ensure_ascii=False))
+                await redis_client.lpush('transactions', json.dumps(msg_data, ensure_ascii=False))
+            except (KeyError, ValueError) as e:
+                logger.error(f"Failed to parse LLM response: {e}")
+                continue
 
 
 if __name__ == '__main__':
