@@ -29,10 +29,7 @@ system_prompt = '''
 Одежда и обувь,
 Товары для дома,
 Развлечения,
-Подарки,
 Техника,
-Отдых,
-Сигареты,
 Красота,
 Другое
 )
@@ -78,7 +75,7 @@ async def send_to_llm(mail_data: dict, http_client: httpx.AsyncClient):
 
 async def process_queue():
     redis_client = redis.from_url(REDIS_URL, decode_responses=True)
-    async with httpx.AsyncClient() as http_client:
+    async with httpx.AsyncClient(timeout=120) as http_client:
         while True:
             msg_raw = await redis_client.rpop('mail_queue')
             if msg_raw is None:
@@ -98,7 +95,7 @@ async def process_queue():
                 logger.info(f"Sent to LLM, status: {response.status_code}, response: {llm_response}")
                 msg_data.update(llm_response)
 
-                if msg_data['receipt_date']:
+                if msg_data.get('receipt_date'):
                     dt = datetime.fromisoformat(msg_data['receipt_date'])
                     # TODO: get timezone or offsetfrom msg_data['timezone']
                     tz = ZoneInfo('Europe/Moscow')
